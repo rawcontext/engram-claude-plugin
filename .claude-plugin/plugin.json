@@ -10,5 +10,5 @@
 	"homepage": "https://rawcontext.com/engram",
 	"repository": "https://github.com/rawcontext/engram-claude-plugin",
 	"license": "MIT",
-	"keywords": ["memory", "context", "knowledge-graph", "ai-agent", "claude-code", "mcp", "context-graph"]
+	"keywords": ["agent-memory", "context", "knowledge-graph", "ai-agent", "claude-code", "mcp", "context-graph"]
 }
