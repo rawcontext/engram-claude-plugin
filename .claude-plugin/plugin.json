@@ -1,0 +1,14 @@
+{
+	"name": "engram",
+	"description": "Persistent memory for Claude Code. Remember decisions, recall past context, and maintain institutional knowledge across sessions.",
+	"version": "1.0.0",
+	"author": {
+		"name": "Chris Cheney",
+		"email": "chris@cheney.dev",
+		"url": "https://github.com/ccheney"
+	},
+	"homepage": "https://rawcontext.com/engram",
+	"repository": "https://github.com/rawcontext/engram-claude-plugin",
+	"license": "MIT",
+	"keywords": ["memory", "context", "knowledge", "ai-agent", "claude-code", "mcp", "context-graph"]
+}

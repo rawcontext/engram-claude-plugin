@@ -1,0 +1,9 @@
+{
+	"name": "rawcontext-engram",
+	"plugins": [
+		{
+			"name": "engram",
+			"path": "."
+		}
+	]
+}
