@@ -18,7 +18,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "${PLUGIN_ROOT}/hooks/scripts/ingest.sh",
+						"command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/ingest.sh",
 						"timeout": 10
 					}
 				]
@@ -30,7 +30,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "${PLUGIN_ROOT}/hooks/scripts/ingest.sh",
+						"command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/ingest.sh",
 						"timeout": 10
 					}
 				]
@@ -42,7 +42,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "${PLUGIN_ROOT}/hooks/scripts/ingest.sh",
+						"command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/ingest.sh",
 						"timeout": 10
 					}
 				]
@@ -54,7 +54,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "${PLUGIN_ROOT}/hooks/scripts/ingest.sh",
+						"command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/ingest.sh",
 						"timeout": 10
 					}
 				]
