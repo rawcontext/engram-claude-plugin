@@ -5,6 +5,9 @@
 
 set -e
 
+# Debug logging (remove after testing)
+DEBUG_LOG="/tmp/engram-hook-debug.log"
+
 # Read JSON from stdin
 INPUT=$(cat)
 
@@ -20,6 +23,9 @@ else
 	RANDOM_SUFFIX=$(head -c 8 /dev/urandom | xxd -p | head -c 8)
 fi
 EVENT_ID="${SESSION_ID:-unknown}-${TIMESTAMP}-${RANDOM_SUFFIX}"
+
+# Log event received
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Hook triggered: $EVENT_NAME (session: $SESSION_ID)" >> "$DEBUG_LOG"
 
 # Get ingestion URL from environment or use cloud default
 INGESTION_URL="${ENGRAM_INGESTION_URL:-https://api.engram.rawcontext.com}"
@@ -49,8 +55,11 @@ fi
 
 # If no token found, exit silently (auth required)
 if [ -z "$AUTH_TOKEN" ]; then
+	echo "[$(date '+%Y-%m-%d %H:%M:%S')] No auth token found, skipping" >> "$DEBUG_LOG"
 	exit 0
 fi
+
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Auth token found, preparing payload" >> "$DEBUG_LOG"
 
 # Construct RawStreamEvent envelope
 # This matches the RawStreamEventSchema from @engram/events
@@ -75,14 +84,18 @@ PAYLOAD=$(jq -n \
 # Send to ingestion service asynchronously with auth header
 # - Run in background (&)
 # - Set short timeout (5s)
-# - Suppress all output
 # - Exit 0 always, even on curl failure
-(curl -sS -X POST "${INGESTION_URL}/v1/ingest" \
-	-H "Content-Type: application/json" \
-	-H "Authorization: Bearer $AUTH_TOKEN" \
-	-d "$PAYLOAD" \
-	--max-time 5 \
-	>/dev/null 2>&1 || true) &
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Sending to: ${INGESTION_URL}/v1/ingest" >> "$DEBUG_LOG"
+(
+	HTTP_CODE=$(curl -sS -X POST "${INGESTION_URL}/v1/ingest" \
+		-H "Content-Type: application/json" \
+		-H "Authorization: Bearer $AUTH_TOKEN" \
+		-d "$PAYLOAD" \
+		--max-time 5 \
+		-w "%{http_code}" \
+		-o /dev/null 2>&1) || HTTP_CODE="failed"
+	echo "[$(date '+%Y-%m-%d %H:%M:%S')] Response: $HTTP_CODE for $EVENT_NAME" >> "$DEBUG_LOG"
+) &
 
 # CRITICAL: Always exit successfully to not block Claude Code
 exit 0
