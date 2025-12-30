@@ -21,8 +21,8 @@ else
 fi
 EVENT_ID="${SESSION_ID:-unknown}-${TIMESTAMP}-${RANDOM_SUFFIX}"
 
-# Get ingestion URL from environment or use default
-INGESTION_URL="${ENGRAM_INGESTION_URL:-http://localhost:6175}"
+# Get ingestion URL from environment or use cloud default
+INGESTION_URL="${ENGRAM_INGESTION_URL:-https://api.engram.rawcontext.com}"
 
 # Read auth token from MCP server's token cache
 # The MCP server stores OAuth tokens at ~/.engram/auth.json after device flow auth
