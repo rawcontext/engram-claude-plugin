@@ -20,15 +20,14 @@ Add the Engram MCP server to your Claude Code settings (`~/.claude/settings.json
 {
   "mcpServers": {
     "engram": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@rawcontext/engram"]
+      "type": "http",
+      "url": "https://mcp.engram.rawcontext.com"
     }
   }
 }
 ```
 
-On first use, you'll be prompted to authenticate via OAuth.
+On first use, you'll be prompted to authenticate via OAuth device flow.
 
 ## Commands
 
@@ -94,17 +93,14 @@ This plugin includes hooks that automatically capture Claude Code events and for
 
 ### Configuration
 
-Set the ingestion URL via environment variable:
+By default, events are sent to `https://api.engram.rawcontext.com`. Override with:
 
 ```bash
-# Local development (default)
+# Local development
 export ENGRAM_INGESTION_URL="http://localhost:6175"
-
-# Cloud deployment
-export ENGRAM_INGESTION_URL="https://api.engram.rawcontext.com"
 ```
 
-For authenticated cloud deployments, the plugin reads OAuth tokens from `~/.engram/auth.json` (populated by the MCP server's device flow authentication).
+The plugin reads OAuth tokens from `~/.engram/auth.json` (populated by the MCP server's device flow authentication).
 
 ### Hook Events
 
