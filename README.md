@@ -22,7 +22,7 @@ Add the Engram MCP server to your Claude Code settings (`~/.claude/settings.json
     "engram": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@rawcontext/engram"]
+      "args": ["-y", "@rawcontext/engram-mcp"]
     }
   }
 }
