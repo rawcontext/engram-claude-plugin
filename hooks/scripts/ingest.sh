@@ -16,13 +16,13 @@ SESSION_ID=$(echo "$INPUT" | jq -r '.session_id // empty' 2>/dev/null || echo ""
 EVENT_NAME=$(echo "$INPUT" | jq -r '.hook_event_name // empty' 2>/dev/null || echo "")
 TIMESTAMP=$(date +%s%3N)
 
-# Generate event ID from session + timestamp + random suffix
-if command -v openssl &>/dev/null; then
-	RANDOM_SUFFIX=$(openssl rand -hex 4)
+# Generate a proper UUID v4 for event_id
+if command -v uuidgen &>/dev/null; then
+	EVENT_ID=$(uuidgen | tr '[:upper:]' '[:lower:]')
 else
-	RANDOM_SUFFIX=$(head -c 8 /dev/urandom | xxd -p | head -c 8)
+	# Fallback: generate UUID v4 from random bytes
+	EVENT_ID=$(od -x /dev/urandom | head -1 | awk '{OFS="-"; print $2$3,$4,$5,$6,$7$8$9}' | sed 's/./4/13;s/./a/17')
 fi
-EVENT_ID="${SESSION_ID:-unknown}-${TIMESTAMP}-${RANDOM_SUFFIX}"
 
 # Log event received
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] Hook triggered: $EVENT_NAME (session: $SESSION_ID)" >> "$DEBUG_LOG"
