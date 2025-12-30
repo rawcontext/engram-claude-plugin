@@ -14,14 +14,20 @@ Persistent memory for Claude Code. Remember decisions, recall past context, and 
 
 ## Configuration
 
-Add the Engram MCP server to your Claude Code settings (`~/.claude/settings.json`):
+Start the Engram MCP server:
+
+```bash
+npx @rawcontext/engram
+```
+
+Add to your Claude Code settings (`~/.claude/settings.json`):
 
 ```json
 {
   "mcpServers": {
     "engram": {
       "type": "http",
-      "url": "https://mcp.engram.rawcontext.com"
+      "url": "http://localhost:3010"
     }
   }
 }
