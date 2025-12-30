@@ -42,20 +42,6 @@ fi
 
 # If no token found, exit silently (auth required)
 if [ -z "$AUTH_TOKEN" ]; then
-	exit 0
-fi
-
-# Read auth token from MCP server's token cache
-# The MCP server stores OAuth tokens at ~/.engram/auth.json after device flow auth
-TOKEN_FILE="${HOME}/.engram/auth.json"
-AUTH_TOKEN=""
-
-if [ -f "$TOKEN_FILE" ]; then
-	AUTH_TOKEN=$(jq -r '.access_token // empty' "$TOKEN_FILE" 2>/dev/null || echo "")
-fi
-
-# If no token found, exit silently (auth required)
-if [ -z "$AUTH_TOKEN" ]; then
 	echo "[$(date '+%Y-%m-%d %H:%M:%S')] No auth token found, skipping" >> "$DEBUG_LOG"
 	exit 0
 fi
@@ -66,7 +52,7 @@ echo "[$(date '+%Y-%m-%d %H:%M:%S')] Auth token found, preparing payload" >> "$D
 # This matches the RawStreamEventSchema from @engram/events
 PAYLOAD=$(jq -n \
 	--arg event_id "$EVENT_ID" \
-	--arg timestamp "$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ 2>/dev/null || date -u +%Y-%m-%dT%H:%M:%SZ)" \
+	--arg timestamp "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
 	--arg session_id "$SESSION_ID" \
 	--arg event_name "$EVENT_NAME" \
 	--argjson input "$INPUT" \
