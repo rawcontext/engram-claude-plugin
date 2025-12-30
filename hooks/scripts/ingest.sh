@@ -88,7 +88,7 @@ PAYLOAD=$(jq -n \
 # - Exit 0 always, even on curl failure
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] Sending to: ${INGESTION_URL}/api/ingest" >> "$DEBUG_LOG"
 (
-	HTTP_CODE=$(curl -sS -X POST "${INGESTION_URL}/api/ingest" \
+	HTTP_CODE=$(curl -sSL -X POST "${INGESTION_URL}/api/ingest" \
 		-H "Content-Type: application/json" \
 		-H "Authorization: Bearer $AUTH_TOKEN" \
 		-d "$PAYLOAD" \
