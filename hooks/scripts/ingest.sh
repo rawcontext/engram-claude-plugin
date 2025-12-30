@@ -28,7 +28,8 @@ EVENT_ID="${SESSION_ID:-unknown}-${TIMESTAMP}-${RANDOM_SUFFIX}"
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] Hook triggered: $EVENT_NAME (session: $SESSION_ID)" >> "$DEBUG_LOG"
 
 # Get ingestion URL from environment or use cloud default
-INGESTION_URL="${ENGRAM_INGESTION_URL:-https://api.engram.rawcontext.com}"
+# Observatory exposes the ingest endpoint at /api/ingest
+INGESTION_URL="${ENGRAM_INGESTION_URL:-https://observatory.engram.rawcontext.com}"
 
 # Read auth token from MCP server's token cache
 # The MCP server stores OAuth tokens at ~/.engram/auth.json after device flow auth
@@ -85,9 +86,9 @@ PAYLOAD=$(jq -n \
 # - Run in background (&)
 # - Set short timeout (5s)
 # - Exit 0 always, even on curl failure
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Sending to: ${INGESTION_URL}/v1/ingest" >> "$DEBUG_LOG"
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Sending to: ${INGESTION_URL}/api/ingest" >> "$DEBUG_LOG"
 (
-	HTTP_CODE=$(curl -sS -X POST "${INGESTION_URL}/v1/ingest" \
+	HTTP_CODE=$(curl -sS -X POST "${INGESTION_URL}/api/ingest" \
 		-H "Content-Type: application/json" \
 		-H "Authorization: Bearer $AUTH_TOKEN" \
 		-d "$PAYLOAD" \
