@@ -1,6 +1,7 @@
 #!/bin/bash
 # Engram ingestion hook - forwards Claude Code events to ingestion service
-# This script is called by Claude Code hooks and should NEVER block.
+# Requires OAuth authentication. This script is called by Claude Code hooks
+# and should NEVER block.
 
 set -e
 
@@ -13,7 +14,6 @@ EVENT_NAME=$(echo "$INPUT" | jq -r '.hook_event_name // empty' 2>/dev/null || ec
 TIMESTAMP=$(date +%s%3N)
 
 # Generate event ID from session + timestamp + random suffix
-# Use /dev/urandom if openssl not available
 if command -v openssl &>/dev/null; then
 	RANDOM_SUFFIX=$(openssl rand -hex 4)
 else
@@ -23,6 +23,20 @@ EVENT_ID="${SESSION_ID:-unknown}-${TIMESTAMP}-${RANDOM_SUFFIX}"
 
 # Get ingestion URL from environment or use default
 INGESTION_URL="${ENGRAM_INGESTION_URL:-http://localhost:6175}"
+
+# Read auth token from MCP server's token cache
+# The MCP server stores OAuth tokens at ~/.engram/auth.json after device flow auth
+TOKEN_FILE="${HOME}/.engram/auth.json"
+AUTH_TOKEN=""
+
+if [ -f "$TOKEN_FILE" ]; then
+	AUTH_TOKEN=$(jq -r '.access_token // empty' "$TOKEN_FILE" 2>/dev/null || echo "")
+fi
+
+# If no token found, exit silently (auth required)
+if [ -z "$AUTH_TOKEN" ]; then
+	exit 0
+fi
 
 # Construct RawStreamEvent envelope
 # This matches the RawStreamEventSchema from @engram/events
@@ -44,13 +58,14 @@ PAYLOAD=$(jq -n \
     }
   }' 2>/dev/null) || exit 0
 
-# Send to ingestion service asynchronously (never block Claude Code)
+# Send to ingestion service asynchronously with auth header
 # - Run in background (&)
 # - Set short timeout (5s)
 # - Suppress all output
 # - Exit 0 always, even on curl failure
-(curl -sS -X POST "${INGESTION_URL}/ingest" \
+(curl -sS -X POST "${INGESTION_URL}/v1/ingest" \
 	-H "Content-Type: application/json" \
+	-H "Authorization: Bearer $AUTH_TOKEN" \
 	-d "$PAYLOAD" \
 	--max-time 5 \
 	>/dev/null 2>&1 || true) &
