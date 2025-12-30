@@ -84,6 +84,39 @@ Engram stores memories in a bitemporal graph database with vector embeddings for
 - **insight**: Debugging discoveries and learnings
 - **fact**: Objective information about the codebase
 
+## Automatic Event Ingestion
+
+This plugin includes hooks that automatically capture Claude Code events and forward them to the Engram ingestion service. This provides:
+
+- **Session tracking**: SessionStart/SessionEnd events for session lifecycle
+- **Tool usage**: PostToolUse events capture every tool invocation
+- **Completion tracking**: Stop events mark agent completion
+
+### Configuration
+
+Set the ingestion URL via environment variable:
+
+```bash
+# Local development (default)
+export ENGRAM_INGESTION_URL="http://localhost:6175"
+
+# Cloud deployment
+export ENGRAM_INGESTION_URL="https://api.engram.rawcontext.com"
+```
+
+For authenticated cloud deployments, the plugin reads OAuth tokens from `~/.engram/auth.json` (populated by the MCP server's device flow authentication).
+
+### Hook Events
+
+| Event | Description |
+|-------|-------------|
+| SessionStart | Session initialized with model and tools |
+| SessionEnd | Session terminated |
+| PostToolUse | Tool executed with inputs and results |
+| Stop | Agent completed task |
+
+The hooks run asynchronously in the background and never block Claude Code.
+
 ## License
 
 MIT
