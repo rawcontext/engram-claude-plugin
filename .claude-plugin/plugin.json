@@ -1,7 +1,7 @@
 {
 	"name": "engram",
 	"description": "Persistent memory for Claude Code. Remember decisions, recall past context, and maintain institutional knowledge across sessions.",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"author": {
 		"name": "Chris Cheney",
 		"email": "chris@cheney.dev",
@@ -10,5 +10,55 @@
 	"homepage": "https://rawcontext.com/engram",
 	"repository": "https://github.com/rawcontext/engram-claude-plugin",
 	"license": "MIT",
-	"keywords": ["agent-memory", "context", "knowledge-graph", "ai-agent", "claude-code", "mcp", "context-graph"]
+	"keywords": ["agent-memory", "context", "knowledge-graph", "ai-agent", "claude-code", "mcp", "context-graph"],
+	"hooks": {
+		"SessionStart": [
+			{
+				"matcher": ".*",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "${PLUGIN_ROOT}/hooks/scripts/ingest.sh",
+						"timeout": 10
+					}
+				]
+			}
+		],
+		"SessionEnd": [
+			{
+				"matcher": ".*",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "${PLUGIN_ROOT}/hooks/scripts/ingest.sh",
+						"timeout": 10
+					}
+				]
+			}
+		],
+		"PostToolUse": [
+			{
+				"matcher": ".*",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "${PLUGIN_ROOT}/hooks/scripts/ingest.sh",
+						"timeout": 10
+					}
+				]
+			}
+		],
+		"Stop": [
+			{
+				"matcher": ".*",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "${PLUGIN_ROOT}/hooks/scripts/ingest.sh",
+						"timeout": 10
+					}
+				]
+			}
+		]
+	}
 }
