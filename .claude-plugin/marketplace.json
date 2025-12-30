@@ -1,9 +1,13 @@
 {
-	"name": "rawcontext-engram",
+	"name": "engram",
+	"owner": {
+		"name": "Chris Cheney",
+		"email": "chris@cheney.dev"
+	},
 	"plugins": [
 		{
 			"name": "engram",
-			"path": "."
+			"source": "./"
 		}
 	]
 }
