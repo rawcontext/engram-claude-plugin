@@ -12,23 +12,7 @@ Persistent memory for Claude Code. Remember decisions, recall past context, and 
 /plugin install engram@rawcontext-engram
 ```
 
-## Configuration
-
-Add the Engram MCP server to your Claude Code settings (`~/.claude/settings.json`):
-
-```json
-{
-  "mcpServers": {
-    "engram": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@rawcontext/engram-mcp"]
-    }
-  }
-}
-```
-
-On first use, you'll be prompted to authenticate via OAuth.
+The plugin includes the Engram MCP server - no additional configuration needed. On first use, you'll be prompted to authenticate via OAuth.
 
 ## Commands
 
