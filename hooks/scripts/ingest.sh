@@ -38,6 +38,20 @@ if [ -z "$AUTH_TOKEN" ]; then
 	exit 0
 fi
 
+# Read auth token from MCP server's token cache
+# The MCP server stores OAuth tokens at ~/.engram/auth.json after device flow auth
+TOKEN_FILE="${HOME}/.engram/auth.json"
+AUTH_TOKEN=""
+
+if [ -f "$TOKEN_FILE" ]; then
+	AUTH_TOKEN=$(jq -r '.access_token // empty' "$TOKEN_FILE" 2>/dev/null || echo "")
+fi
+
+# If no token found, exit silently (auth required)
+if [ -z "$AUTH_TOKEN" ]; then
+	exit 0
+fi
+
 # Construct RawStreamEvent envelope
 # This matches the RawStreamEventSchema from @engram/events
 PAYLOAD=$(jq -n \
